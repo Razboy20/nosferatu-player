@@ -1,0 +1,6 @@
+{
+    "scss.lint.unknownAtRules": "ignore",
+    "eslint.format.enable": true,
+    "typescriptHero.imports.organizeOnSave": false,
+    "typescript.tsdk": "node_modules\\typescript\\lib",
+}
