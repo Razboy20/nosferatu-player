@@ -62,22 +62,24 @@ export default function Counter({ src }: { src: string }) {
         // on:webkitpresentationmodechanged={handleFullScreen}
       />
       <div class="controls">
-        <div class="current_time">{formatTime(progress())}</div>
-        <button
-          class="play_button"
-          onClick={togglePlay}
-          classList={{
-            playing: playing(),
-          }}
-        >
-          <Show when={playing()} fallback={<IconPlayArrowRounded />}>
-            <IconPause
-              style={{
-                "font-size": "0.9em",
-              }}
-            />
-          </Show>
-        </button>
+        <div>
+          <div class="current_time">{formatTime(progress())}</div>
+          <button
+            class="play_button"
+            onClick={togglePlay}
+            classList={{
+              playing: playing(),
+            }}
+          >
+            <Show when={playing()} fallback={<IconPlayArrowRounded />}>
+              <IconPause
+                style={{
+                  "font-size": "0.9em",
+                }}
+              />
+            </Show>
+          </button>
+        </div>
       </div>
     </div>
   );

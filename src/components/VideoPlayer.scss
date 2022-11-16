@@ -17,20 +17,32 @@
   }
 
   .controls {
-    @apply absolute top-8 right-8 flex flex-col gap-5 items-center;
-    .play_button {
-      @apply w-16 h-16;
-      @apply bg-neutral-800 border-neutral-600 rounded-full shadow transition-colors;
-      @apply flex items-center justify-center;
-      @apply cursor-pointer text-white text-5xl;
-      @apply hover:bg-neutral-700;
+    @apply absolute grid w-full h-full pointer-events-none;
+    grid-template-columns: 1fr 125vh 1fr;
 
-      &.playing {
-        @apply border-2;
+    > div {
+      @apply col-start-3 w-full h-fit mt-8 py-5 flex flex-col gap-5 items-center min-w-fit;
+      // @apply bg-black/50 rounded-3xl;
+
+      .current_time {
+        @apply text-white text-center w-full text-6xl font-mono;
+      }
+
+      .play_button {
+        @apply w-16 h-16;
+        @apply bg-neutral-800 border-neutral-600 rounded-full shadow transition-colors;
+        @apply flex items-center justify-center;
+        @apply cursor-pointer text-white text-5xl pointer-events-auto;
+        @apply hover:bg-neutral-700;
+
+        &.playing {
+          @apply border-2;
+        }
+      }
+
+      @media (max-width: calc(125vh + 10rem)) {
+        @apply fixed right-5 top-0 w-fit;
       }
     }
-  }
-  .current_time {
-    @apply text-white text-right w-full text-6xl font-mono;
   }
 }
