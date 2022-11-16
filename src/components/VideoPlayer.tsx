@@ -15,6 +15,7 @@ export default function Counter({ src }: { src: string }) {
   const [progress, setProgress] = createSignal(0);
   const [playing, setPlaying] = createSignal(false);
   let videoRef: HTMLVideoElement;
+  let containerEl: HTMLDivElement;
 
   const togglePlay = () => {
     if (playing()) {
@@ -29,12 +30,27 @@ export default function Counter({ src }: { src: string }) {
     if (event.key === " ") {
       togglePlay();
     }
-    console.log(event.key);
+    if (event.key === "f") {
+      handleFullScreen();
+    }
+  };
+
+  const handleFullScreen = (event?: Event) => {
+    // check if already fullscreen
+    if (document.fullscreenElement) {
+      // exit fullscreen
+      document.exitFullscreen();
+    } else {
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen();
+      }
+    }
   };
 
   return (
-    <div class="video-player">
+    <div class="video-player" ref={containerEl}>
       <WindowEventListener onKeydown={handleKeyPress} />
+      <progress value={progress()} max={videoRef.duration} />
       <video
         controls
         src={src}
@@ -42,6 +58,8 @@ export default function Counter({ src }: { src: string }) {
         onPlay={(e) => setPlaying(!e.currentTarget.paused)}
         onPause={(e) => setPlaying(!e.currentTarget.paused)}
         onTimeUpdate={(e) => setProgress(e.currentTarget.currentTime)}
+        // on:fullscreenchange={handleFullScreen}
+        // on:webkitpresentationmodechanged={handleFullScreen}
       />
       <div class="controls">
         <div class="current_time">{formatTime(progress())}</div>

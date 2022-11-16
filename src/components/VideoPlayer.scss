@@ -1,9 +1,19 @@
 .video-player {
-  @apply w-screen h-screen absolute top-0 left-0;
+  @apply w-screen h-screen absolute top-0 left-0 flex flex-col;
   @apply bg-black;
 
+  progress {
+    @apply w-full;
+    &::-webkit-progress-bar {
+      @apply bg-neutral-800;
+    }
+    &::-webkit-progress-value {
+      @apply bg-neutral-500;
+    }
+  }
+
   video {
-    @apply w-full h-full;
+    @apply w-full h-0 flex-grow;
   }
 
   .controls {

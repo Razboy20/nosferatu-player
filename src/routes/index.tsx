@@ -1,5 +1,6 @@
-import { createMemo, createSignal, JSX, Show } from "solid-js";
+import { createSignal, JSX, Show } from "solid-js";
 import VideoPlayer from "~/components/VideoPlayer";
+import IconVideoFile from "~icons/material-symbols/video-file-rounded";
 
 export default function NosferatuPlayer() {
   const [videoBlob, setVideoBlob] = createSignal<File | null>(null);
@@ -11,18 +12,24 @@ export default function NosferatuPlayer() {
     }
   };
 
-  const videoURL = createMemo(() => {
+  const videoURL = () => {
     if (videoBlob()) {
       return URL.createObjectURL(videoBlob());
     }
-  });
+  };
+
+  let uploadRef: HTMLInputElement;
 
   return (
     <main class="text-center p-4">
       <Show when={!videoBlob()}>
-        <input class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-fit" type="file" accept="video/*" onChange={processFile} />
+        <input type="file" accept="video/*" hidden ref={uploadRef} onChange={processFile} />
+        <button class="btn-upload flex items-center gap-1" onClick={() => uploadRef.click()}>
+          <IconVideoFile />
+          Select Video
+        </button>
       </Show>
-      <Show when={videoBlob()}>
+      <Show when={videoURL()}>
         <VideoPlayer src={videoURL()}></VideoPlayer>
       </Show>
     </main>
