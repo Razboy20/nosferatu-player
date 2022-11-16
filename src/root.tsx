@@ -1,5 +1,5 @@
 // @refresh reload
-import "./root.css";
+import "./root.scss";
 
 import { Suspense } from "solid-js";
 import { Body, ErrorBoundary, FileRoutes, Head, Html, Meta, Routes, Scripts, Title } from "solid-start";

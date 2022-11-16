@@ -1,4 +1,5 @@
 import { createMemo, createSignal, JSX, Show } from "solid-js";
+import VideoPlayer from "~/components/VideoPlayer";
 
 export default function NosferatuPlayer() {
   const [videoBlob, setVideoBlob] = createSignal<File | null>(null);
@@ -19,10 +20,10 @@ export default function NosferatuPlayer() {
   return (
     <main class="text-center p-4">
       <Show when={!videoBlob()}>
-        <input type="file" accept="video/*" onChange={processFile} />
+        <input class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-fit" type="file" accept="video/*" onChange={processFile} />
       </Show>
-      <Show when={videoURL()}>
-        <video controls src={videoURL()} />
+      <Show when={videoBlob()}>
+        <VideoPlayer src={videoURL()}></VideoPlayer>
       </Show>
     </main>
   );

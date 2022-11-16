@@ -1,13 +1,66 @@
-import { createSignal } from "solid-js";
+import { WindowEventListener } from "@solid-primitives/event-listener";
+import { createSignal, JSX, Show } from "solid-js";
 
-export default function Counter() {
-  const [count, setCount] = createSignal(0);
+import IconPause from "~icons/material-symbols/pause-rounded";
+import IconPlayArrowRounded from "~icons/material-symbols/play-arrow-rounded";
+import "./VideoPlayer.scss";
+
+function formatTime(time: number) {
+  const minutes = Math.floor(time / 60);
+  const seconds = Math.floor(time - minutes * 60);
+  return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+}
+
+export default function Counter({ src }: { src: string }) {
+  const [progress, setProgress] = createSignal(0);
+  const [playing, setPlaying] = createSignal(false);
+  let videoRef: HTMLVideoElement;
+
+  const togglePlay = () => {
+    if (playing()) {
+      videoRef.pause();
+    } else {
+      videoRef.play();
+    }
+    setPlaying(!playing());
+  };
+
+  const handleKeyPress: JSX.EventHandler<HTMLDivElement, KeyboardEvent> = (event) => {
+    if (event.key === " ") {
+      togglePlay();
+    }
+    console.log(event.key);
+  };
+
   return (
-    <button
-      class="w-[200px] rounded-full bg-gray-100 border-2 border-gray-300 focus:border-gray-400 active:border-gray-400 px-[2rem] py-[1rem]"
-      onClick={() => setCount(count() + 1)}
-    >
-      Clicks: {count()}
-    </button>
+    <div class="video-player">
+      <WindowEventListener onKeydown={handleKeyPress} />
+      <video
+        controls
+        src={src}
+        ref={videoRef}
+        onPlay={(e) => setPlaying(!e.currentTarget.paused)}
+        onPause={(e) => setPlaying(!e.currentTarget.paused)}
+        onTimeUpdate={(e) => setProgress(e.currentTarget.currentTime)}
+      />
+      <div class="controls">
+        <div class="current_time">{formatTime(progress())}</div>
+        <button
+          class="play_button"
+          onClick={togglePlay}
+          classList={{
+            playing: playing(),
+          }}
+        >
+          <Show when={playing()} fallback={<IconPlayArrowRounded />}>
+            <IconPause
+              style={{
+                "font-size": "0.9em",
+              }}
+            />
+          </Show>
+        </button>
+      </div>
+    </div>
   );
 }
