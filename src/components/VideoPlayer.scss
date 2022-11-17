@@ -12,11 +12,10 @@
 
   .controls {
     @apply absolute grid w-full h-full pointer-events-none;
-    grid-template-columns: 1fr 125vh 1fr;
+    grid-template-columns: 1fr calc(125vh - 2rem) 1fr;
 
     > div {
       @apply col-start-3 w-full h-fit mt-8 py-5 flex flex-col gap-5 items-center min-w-fit;
-      // @apply bg-black/50 rounded-3xl;
 
       .current_time {
         @apply text-white text-center w-full text-6xl font-mono;
@@ -35,8 +34,9 @@
         }
       }
 
-      @media (max-width: calc(125vh + 10rem)) {
+      @media (max-width: calc(125vh - 2rem + 20rem)) {
         @apply fixed right-5 top-0 w-fit;
+        @apply bg-black/50 rounded-3xl px-5;
       }
     }
   }
