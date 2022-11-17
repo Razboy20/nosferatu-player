@@ -1,9 +1,19 @@
-import { WindowEventListener } from "@solid-primitives/event-listener";
-import { createSignal, JSX, Show } from "solid-js";
+import "./VideoPlayer.scss";
 
+import { WindowEventListener } from "@solid-primitives/event-listener";
+import { ComponentProps, createSignal, JSX, ParentComponent, Show, splitProps } from "solid-js";
 import IconPause from "~icons/material-symbols/pause-rounded";
 import IconPlayArrowRounded from "~icons/material-symbols/play-arrow-rounded";
-import "./VideoPlayer.scss";
+
+const Video: ParentComponent<
+  ComponentProps<"video"> & {
+    controlsList?: string;
+  }
+> = (props) => {
+  const [local, attrs] = splitProps(props, []);
+
+  return <video {...attrs}>{props.children}</video>;
+};
 
 function formatTime(time: number) {
   const minutes = Math.floor(time / 60);
@@ -27,6 +37,8 @@ export default function Counter({ src }: { src: string }) {
   };
 
   const handleKeyPress: JSX.EventHandler<HTMLDivElement, KeyboardEvent> = (event) => {
+    event.preventDefault();
+
     if (event.key === " ") {
       togglePlay();
     }
@@ -36,6 +48,9 @@ export default function Counter({ src }: { src: string }) {
   };
 
   const handleFullScreen = (event?: Event) => {
+    event?.preventDefault();
+    console.log(event);
+
     // check if already fullscreen
     if (document.fullscreenElement) {
       // exit fullscreen
@@ -49,17 +64,17 @@ export default function Counter({ src }: { src: string }) {
 
   return (
     <div class="video-player" ref={containerEl}>
-      <WindowEventListener onKeydown={handleKeyPress} />
+      <WindowEventListener onkeyup={handleKeyPress} />
       <progress value={progress()} max={videoRef.duration} />
-      <video
+      <Video
         controls
         src={src}
         ref={videoRef}
         onPlay={(e) => setPlaying(!e.currentTarget.paused)}
         onPause={(e) => setPlaying(!e.currentTarget.paused)}
         onTimeUpdate={(e) => setProgress(e.currentTarget.currentTime)}
-        // on:fullscreenchange={handleFullScreen}
-        // on:webkitpresentationmodechanged={handleFullScreen}
+        onSeeking={(e) => setProgress(e.currentTarget.currentTime)}
+        controlsList="nodownload nofullscreen"
       />
       <div class="controls">
         <div>
