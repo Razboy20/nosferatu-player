@@ -2,14 +2,8 @@
   @apply w-screen h-screen absolute top-0 left-0 flex flex-col;
   @apply bg-black;
 
-  progress {
-    @apply w-full;
-    &::-webkit-progress-bar {
-      @apply bg-neutral-800;
-    }
-    &::-webkit-progress-value {
-      @apply bg-neutral-400;
-    }
+  .slider_container {
+    @apply text-gray-400 px-5;
   }
 
   video {
@@ -28,15 +22,16 @@
         @apply text-white text-center w-full text-6xl font-mono;
       }
 
-      .play_button {
-        @apply w-16 h-16;
-        @apply bg-neutral-800 border-neutral-600 rounded-full shadow transition-colors;
+      .button {
+        @apply w-16 h-16 box-border;
+        @apply bg-neutral-800 border-neutral-800/0 border-2 rounded-full shadow transition-colors outline-0;
         @apply flex items-center justify-center;
         @apply cursor-pointer text-white text-5xl pointer-events-auto;
         @apply hover:bg-neutral-700;
+        // @apply focus-visible:ring-2 ring-offset-2 ring-offset-black;
 
-        &.playing {
-          @apply border-2;
+        &.active {
+          @apply border-neutral-600;
         }
       }
 

@@ -1,9 +1,10 @@
 import "./VideoPlayer.scss";
 
-import { WindowEventListener } from "@solid-primitives/event-listener";
-import { ComponentProps, createSignal, JSX, ParentComponent, Show, splitProps } from "solid-js";
+import { DocumentEventListener } from "@solid-primitives/event-listener";
+import { ComponentProps, createEffect, createSignal, JSX, ParentComponent, Show, splitProps } from "solid-js";
 import IconPause from "~icons/material-symbols/pause-rounded";
 import IconPlayArrowRounded from "~icons/material-symbols/play-arrow-rounded";
+import { Slider } from "./Slider";
 
 const Video: ParentComponent<
   ComponentProps<"video"> & {
@@ -23,16 +24,13 @@ function formatTime(time: number) {
 
 export default function Counter({ src }: { src: string }) {
   const [progress, setProgress] = createSignal(0);
+  const [videoDuration, setVideoDuration] = createSignal(0);
   const [playing, setPlaying] = createSignal(false);
-  let videoRef: HTMLVideoElement;
+  const [seeking, setSeeking] = createSignal(false);
+  const [videoRef, setVideoRef] = createSignal<HTMLVideoElement>(null);
   let containerEl: HTMLDivElement;
 
   const togglePlay = () => {
-    if (playing()) {
-      videoRef.pause();
-    } else {
-      videoRef.play();
-    }
     setPlaying(!playing());
   };
 
@@ -43,14 +41,11 @@ export default function Counter({ src }: { src: string }) {
       togglePlay();
     }
     if (event.key === "f") {
-      handleFullScreen();
+      toggleFullScreen();
     }
   };
 
-  const handleFullScreen = (event?: Event) => {
-    event?.preventDefault();
-    console.log(event);
-
+  const toggleFullScreen = () => {
     // check if already fullscreen
     if (document.fullscreenElement) {
       // exit fullscreen
@@ -58,32 +53,66 @@ export default function Counter({ src }: { src: string }) {
     } else {
       if (document.documentElement.requestFullscreen) {
         document.documentElement.requestFullscreen();
+        // handle safari
+      } else if ((containerEl as any).webkitRequestFullscreen) {
+        (containerEl as any).webkitRequestFullscreen();
       }
     }
   };
 
+  createEffect(() => {
+    if (seeking()) videoRef().currentTime = progress();
+  }, [seeking, progress]);
+
+  createEffect(() => {
+    if (!playing()) {
+      videoRef().pause();
+    } else {
+      videoRef().play();
+    }
+  }, [playing]);
+
   return (
     <div class="video-player" ref={containerEl}>
-      <WindowEventListener onkeyup={handleKeyPress} />
-      <progress value={progress()} max={videoRef.duration} />
+      <DocumentEventListener onkeyup={handleKeyPress} />
+      {/* <progress value={progress()} max={videoRef.duration} /> */}
+      <div class="slider_container">
+        <Slider
+          value={progress()}
+          max={videoDuration()}
+          step={0.2}
+          onChange={(val) => setProgress(val)}
+          onSeeking={(val) => {
+            if (val) {
+              setPlaying(false);
+            }
+            setSeeking(val);
+          }}
+          class="slider"
+        />
+      </div>
       <Video
-        controls
+        // controls
         src={src}
-        ref={videoRef}
+        ref={setVideoRef}
         onPlay={(e) => setPlaying(!e.currentTarget.paused)}
         onPause={(e) => setPlaying(!e.currentTarget.paused)}
         onTimeUpdate={(e) => setProgress(e.currentTarget.currentTime)}
         onSeeking={(e) => setProgress(e.currentTarget.currentTime)}
+        onDurationChange={(e) => setVideoDuration(e.currentTarget.duration)}
         controlsList="nodownload nofullscreen"
+        onMouseDown={() => {
+          togglePlay();
+        }}
       />
       <div class="controls">
         <div>
           <div class="current_time">{formatTime(progress())}</div>
           <button
-            class="play_button"
+            class="button"
             onClick={togglePlay}
             classList={{
-              playing: playing(),
+              active: playing(),
             }}
           >
             <Show when={playing()} fallback={<IconPlayArrowRounded />}>

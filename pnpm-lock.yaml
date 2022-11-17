@@ -3,11 +3,13 @@ lockfileVersion: 5.4
 specifiers:
   '@iconify-json/material-symbols': ^1.1.22
   '@solid-primitives/event-listener': ^2.2.4
+  '@solid-primitives/resize-observer': ^2.0.7
   '@solidjs/meta': ^0.28.0
   '@solidjs/router': ^0.5.0
   '@typescript-eslint/eslint-plugin': ^5.43.0
   '@typescript-eslint/parser': ^5.43.0
   autoprefixer: ^10.4.12
+  clsx: ^1.2.1
   eslint: ^8.27.0
   eslint-config-prettier: ^8.5.0
   postcss: ^8.4.18
@@ -24,8 +26,10 @@ specifiers:
 
 dependencies:
   '@solid-primitives/event-listener': 2.2.4_solid-js@1.6.2
+  '@solid-primitives/resize-observer': 2.0.7_solid-js@1.6.2
   '@solidjs/meta': 0.28.2_solid-js@1.6.2
   '@solidjs/router': 0.5.0_solid-js@1.6.2
+  clsx: 1.2.1
   solid-js: 1.6.2
   solid-start: 0.2.5_qx3wzgkguxvthvssnutneqxbxi
   solid-start-vercel: 0.2.5_pwel2bd237mbr7ooh5pghdxziu
@@ -1382,6 +1386,26 @@ packages:
       solid-js: 1.6.2
     dev: false
 
+  /@solid-primitives/resize-observer/2.0.7_solid-js@1.6.2:
+    resolution: {integrity: sha512-/RtCTs61ACdsCKJodNTgnKA05CI09dkg7usAb5jg14L6mzwTNWWdZbXtbYsUlD+kh1/1j+BKxp6VtkbpgJE5yQ==}
+    peerDependencies:
+      solid-js: ^1.6.0
+    dependencies:
+      '@solid-primitives/event-listener': 2.2.4_solid-js@1.6.2
+      '@solid-primitives/rootless': 1.2.1_solid-js@1.6.2
+      '@solid-primitives/utils': 4.0.0_solid-js@1.6.2
+      solid-js: 1.6.2
+    dev: false
+
+  /@solid-primitives/rootless/1.2.1_solid-js@1.6.2:
+    resolution: {integrity: sha512-8RpdyS1e58PQbDjgjpyCh+IGoX3QEs/2LauMfl94eXJ5d/o1y/c6P61z9XqQm+Bx1Otdgx4nbFCoF7HPqa0mwg==}
+    peerDependencies:
+      solid-js: ^1.6.0
+    dependencies:
+      '@solid-primitives/utils': 4.0.0_solid-js@1.6.2
+      solid-js: 1.6.2
+    dev: false
+
   /@solid-primitives/utils/4.0.0_solid-js@1.6.2:
     resolution: {integrity: sha512-fGsJy8Z8YiwogpiezD7TWjI62UCb0JAHJWdoXWGrggrn4bfToZotKkabiB0IVFMkWVE1ZcrkvZT3bkmqGnK0ng==}
     peerDependencies:
@@ -1844,6 +1868,11 @@ packages:
       string-width: 4.2.3
       strip-ansi: 6.0.1
       wrap-ansi: 7.0.0
+
+  /clsx/1.2.1:
+    resolution: {integrity: sha512-EcR6r5a8bj6pu3ycsa/E/cKVGuTgZJZdsyUYHOksG/UHIiKfjxzRxYJpyVBwYaQeOvghal9fcc4PidlgzugAQg==}
+    engines: {node: '>=6'}
+    dev: false
 
   /color-convert/1.9.3:
     resolution: {integrity: sha512-QfAUtd+vFdAtFQcC8CCyYt1fYWxSqAiK2cSD6zDB8N3cpsEBAvRxp9zOGg6G/SHHJYAT88/az/IuDGALsNVbGg==}
