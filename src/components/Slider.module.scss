@@ -15,7 +15,7 @@
   .slider__thumb {
     @apply absolute w-4 h-4 box-border top-1/2 -translate-x-1/2 -translate-y-1/2;
     @apply outline-0 rounded-full bg-white border-[3px] border-current;
-    @apply ring-current transition-shadow duration-75 ease-out;
+    @apply ring-0 ring-current transition-shadow duration-75 ease-out;
 
     &:hover {
       @apply ring-[3px];
