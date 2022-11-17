@@ -1,23 +1,33 @@
 .slider {
-  @apply h-[0.375rem] w-full py-4 inline-block relative;
+  @apply h-2 w-full py-4 inline-block relative;
   @apply cursor-pointer touch-none;
 
   .slider__rail {
-    @apply block absolute w-full h-2 rounded-full bg-current opacity-40;
+    @apply block absolute w-full rounded-full bg-current opacity-40 top-1/2 -translate-y-1/2;
+    height: inherit;
   }
 
   .slider__track {
-    @apply block absolute h-2 rounded-full bg-current left-0;
+    @apply block absolute rounded-full bg-current left-0 top-1/2 -translate-y-1/2;
+    height: inherit;
   }
 
   .slider__thumb {
-    @apply absolute w-4 h-4 -ml-2 -mt-1 box-border;
+    @apply absolute w-4 h-4 box-border top-1/2 -translate-x-1/2 -translate-y-1/2;
     @apply outline-0 rounded-full bg-white border-[3px] border-current;
     @apply ring-current transition-shadow duration-75 ease-out;
 
-    &.seeking,
     &:hover {
-      @apply ring-4;
+      @apply ring-[3px];
+    }
+
+    &.seeking {
+      @apply ring-[5px];
+    }
+
+    &::after {
+      @apply absolute w-7 h-7 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full;
+      content: "";
     }
   }
 }
