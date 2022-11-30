@@ -18,8 +18,8 @@ interface ISliderProps {
 export const Slider: VoidComponent<ISliderProps> = (props) => {
   const local = mergeProps({ value: 0, min: 0, step: 1 }, props);
 
-  const [sizeRef, setSizeRef] = createSignal(null);
-  const [thumbRef, setThumbRef] = createSignal(null);
+  const [sizeRef, setSizeRef] = createSignal<HTMLDivElement>(null);
+  const [thumbRef, setThumbRef] = createSignal<HTMLDivElement>(null);
   const elementSize = createElementSize(sizeRef);
 
   const [seeking, setSeeking] = createSignal(false);
@@ -105,7 +105,7 @@ export const Slider: VoidComponent<ISliderProps> = (props) => {
       <div
         class={clsx(styles.slider__thumb, { [styles.seeking]: seeking() })}
         style={{
-          left: `${position() * 100}%`,
+          "--thumb-x": `${position() * elementSize.width}`,
         }}
         ref={setThumbRef}
         onPointerDown={(e) => {
@@ -113,8 +113,8 @@ export const Slider: VoidComponent<ISliderProps> = (props) => {
           e.stopPropagation();
           e.currentTarget.setPointerCapture(e.pointerId);
           dragPointer = e.pointerId;
-          dragOffset = position() * elementSize.width - e.offsetX - e.currentTarget.offsetLeft;
-          drag(dragOffset + e.offsetX + e.currentTarget.offsetLeft);
+          dragOffset = e.offsetX;
+          drag(e.offsetX - dragOffset + position() * elementSize.width);
           setSeeking(true);
         }}
         onPointerUp={(e) => {
@@ -129,10 +129,10 @@ export const Slider: VoidComponent<ISliderProps> = (props) => {
           e.stopPropagation();
           e.preventDefault();
           if (dragPointer !== undefined && thumbRef()?.hasPointerCapture(dragPointer)) {
-            drag(dragOffset + e.offsetX + e.currentTarget.offsetLeft);
+            drag(e.offsetX - dragOffset + position() * elementSize.width);
           }
         }}
       ></div>
     </div>
   );
-};
+};;;;;
