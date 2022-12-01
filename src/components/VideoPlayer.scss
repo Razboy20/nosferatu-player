@@ -38,7 +38,7 @@
         }
 
         @media (max-width: calc(125vh - 5rem + 20rem)) {
-          @apply fixed right-5 top-0 w-fit;
+          @apply fixed right-5 top-20 w-fit;
           @apply bg-black/50 rounded-3xl px-5;
         }
       }
