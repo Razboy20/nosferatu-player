@@ -1,20 +1,13 @@
 import "./VideoPlayer.scss";
 
 import { DocumentEventListener } from "@solid-primitives/event-listener";
-import { ComponentProps, createEffect, createSignal, JSX, ParentComponent, Show, splitProps } from "solid-js";
+import { createEffect, createSignal, JSX, Show } from "solid-js";
 import IconPause from "~icons/material-symbols/pause-rounded";
 import IconPlayArrowRounded from "~icons/material-symbols/play-arrow-rounded";
 import { Slider } from "./Slider";
-
-const Video: ParentComponent<
-  ComponentProps<"video"> & {
-    controlsList?: string;
-  }
-> = (props) => {
-  const [local, attrs] = splitProps(props, []);
-
-  return <video {...attrs}>{props.children}</video>;
-};
+import { TimelineDrawer } from "./TimelineDrawer";
+import { TimelineProvider } from "./TimelineProvider";
+import { TimelineView } from "./TimelineView";
 
 function formatTime(time: number) {
   const minutes = Math.floor(time / 60);
@@ -72,59 +65,69 @@ export default function Counter({ src }: { src: string }) {
     }
   }, [playing]);
 
+  const setTime = (time: number) => {
+    setProgress(time);
+    videoRef().currentTime = progress();
+  };
+
   return (
-    <div class="video-player" ref={containerEl}>
-      <DocumentEventListener onkeyup={handleKeyPress} />
-      {/* <progress value={progress()} max={videoRef.duration} /> */}
-      <div class="slider_container">
-        <Slider
-          value={progress()}
-          max={videoDuration()}
-          step={0.2}
-          onChange={(val) => setProgress(val)}
-          onSeeking={(val) => {
-            if (val) {
-              setPlaying(false);
-            }
-            setSeeking(val);
-          }}
-          class="slider"
-        />
-      </div>
-      <Video
-        // controls
-        src={src}
-        ref={setVideoRef}
-        onPlay={(e) => setPlaying(!e.currentTarget.paused)}
-        onPause={(e) => setPlaying(!e.currentTarget.paused)}
-        onTimeUpdate={(e) => setProgress(e.currentTarget.currentTime)}
-        onSeeking={(e) => setProgress(e.currentTarget.currentTime)}
-        onDurationChange={(e) => setVideoDuration(e.currentTarget.duration)}
-        controlsList="nodownload nofullscreen"
-        onMouseDown={() => {
-          togglePlay();
-        }}
-      />
-      <div class="controls">
-        <div>
-          <div class="current_time">{formatTime(progress())}</div>
-          <button
-            class="button"
-            onClick={togglePlay}
-            classList={{
-              active: playing(),
+    <TimelineProvider>
+      <div class="video-player" ref={containerEl}>
+        <DocumentEventListener onkeyup={handleKeyPress} />
+        {/* <progress value={progress()} max={videoRef.duration} /> */}
+        <div class="slider_container">
+          <Slider
+            value={progress()}
+            max={videoDuration()}
+            step={0.2}
+            onChange={(val) => setProgress(val)}
+            onSeeking={(val) => {
+              if (val) {
+                setPlaying(false);
+              }
+              setSeeking(val);
             }}
-          >
-            <Show when={playing()} fallback={<IconPlayArrowRounded />}>
-              <IconPause
-                style={{
-                  "font-size": "0.9em",
+            class="slider"
+          />
+        </div>
+        <TimelineView currentTime={progress()} onChange={(val) => setTime(val)} />
+        <TimelineDrawer currentTime={progress()} />
+        <div class="player">
+          <video
+            // controls
+            src={src}
+            ref={setVideoRef}
+            onPlay={(e) => setPlaying(!e.currentTarget.paused)}
+            onPause={(e) => setPlaying(!e.currentTarget.paused)}
+            onTimeUpdate={(e) => setProgress(e.currentTarget.currentTime)}
+            onSeeking={(e) => setProgress(e.currentTarget.currentTime)}
+            onDurationChange={(e) => setVideoDuration(e.currentTarget.duration)}
+            onMouseDown={() => {
+              togglePlay();
+            }}
+          />
+          <div class="controls">
+            <div>
+              <div class="current_time">{formatTime(progress())}</div>
+              <button
+                class="button"
+                onClick={togglePlay}
+                classList={{
+                  active: playing(),
                 }}
-              />
-            </Show>
-          </button>
+              >
+                <Show when={playing()} fallback={<IconPlayArrowRounded />}>
+                  <IconPause
+                    style={{
+                      "font-size": "0.9em",
+                    }}
+                  />
+                </Show>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </TimelineProvider>
   );
 }
