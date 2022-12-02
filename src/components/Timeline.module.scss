@@ -1,11 +1,28 @@
 .timeline {
   @apply h-10 bg-zinc-900 relative;
 
-  .item {
-    @apply absolute top-1/2 left-1/2 h-full flex flex-col justify-center;
+  .item_container {
+    @apply absolute top-1/2 left-1/2 h-full pointer-events-none;
     @apply transition-transform duration-[25] ease-out;
     @apply transform-gpu -translate-y-1/2 will-change-transform;
-    @apply text-white text-left text-sm cursor-pointer;
+
+    --tw-translate-x: calc(var(--pos-x));
+    width: var(--width);
+
+    .start {
+      @apply absolute top-0 left-0 -translate-x-full h-full w-screen bg-black/50 pointer-events-none;
+      @apply border-r-2 border-zinc-800;
+    }
+    .end {
+      @apply absolute top-0 right-0 translate-x-full h-full w-screen bg-black/50 pointer-events-none;
+      @apply border-l-2 border-zinc-800 -z-10;
+    }
+  }
+  .item {
+    @apply absolute top-1/2 h-full flex flex-col justify-center;
+    @apply transition-transform duration-[25] ease-out;
+    @apply transform-gpu -translate-y-1/2;
+    @apply text-white text-left text-sm cursor-pointer pointer-events-auto;
     @apply border-l-2 -ml-[2px] pl-2 border-l-zinc-400/50;
 
     --tw-translate-x: calc(var(--item-x));
@@ -27,13 +44,13 @@
   &::after,
   &::before {
     @apply absolute top-0 left-0 w-1/2 h-full;
-    @apply border-r-2 bg-zinc-900/50 border-r-zinc-400;
+    @apply border-r-2 border-r-zinc-400;
     @apply pointer-events-none;
     content: "";
   }
-  &::before {
-    @apply bg-black;
-  }
+  // &::before {
+  //   @apply bg-black;
+  // }
 }
 
 .drawer {

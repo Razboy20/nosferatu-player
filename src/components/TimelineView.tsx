@@ -18,7 +18,7 @@ export const TimelineView: VoidComponent<TimelineViewProps> = (props) => {
   const [timeline, _, [active, setActive]] = useTimeline();
 
   const computePosition = (timeCode: number) => {
-    return (timeCode - props.currentTime) / seekRatio;
+    return timeCode / seekRatio;
   };
 
   function formatTime(time: number) {
@@ -42,10 +42,8 @@ export const TimelineView: VoidComponent<TimelineViewProps> = (props) => {
     );
   };
 
-  return (
-    <div class={styles.timeline}>
-      <TimelineSeeker currentTime={props.currentTime} onSeek={(seeking, time) => props.onSeek(seeking, time)} seekRatio={seekRatio} max={props.max} />
-      <For each={timeline}>{(item) => <TimelineItem item={item} clickHandler={() => props.onSeek(false, item.timeCode)} />}</For>
+  const DrawerIcon = () => {
+    return (
       <div
         class={styles.toggle_button}
         onClick={(e) => {
@@ -60,6 +58,24 @@ export const TimelineView: VoidComponent<TimelineViewProps> = (props) => {
           <TimelineIcon />
         </Show>
       </div>
+    );
+  };
+
+  return (
+    <div class={styles.timeline}>
+      <TimelineSeeker currentTime={props.currentTime} onSeek={(seeking, time) => props.onSeek(seeking, time)} seekRatio={seekRatio} max={props.max} />
+      <div
+        class={styles.item_container}
+        style={{
+          "--pos-x": `${computePosition(-props.currentTime)}px`,
+          "--width": `${computePosition(props.max)}px`,
+        }}
+      >
+        <div class={styles.start}></div>
+        <For each={timeline}>{(item) => <TimelineItem item={item} clickHandler={() => props.onSeek(false, item.timeCode)} />}</For>
+        <div class={styles.end}></div>
+      </div>
+      <DrawerIcon />
     </div>
   );
 };

@@ -108,7 +108,8 @@ export default function Counter({ src }: { src: string }) {
             onPause={(e) => setPlaying(!e.currentTarget.paused)}
             onTimeUpdate={(e) => setProgress(e.currentTarget.currentTime)}
             onDurationChange={(e) => setVideoDuration(e.currentTarget.duration)}
-            onMouseDown={() => {
+            onMouseDown={(e) => {
+              e.preventDefault();
               togglePlay();
             }}
           />
