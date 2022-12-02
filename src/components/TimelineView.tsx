@@ -3,18 +3,22 @@ import TimelineIcon from "~icons/material-symbols/view-timeline-outline-rounded"
 import TimelineFilledIcon from "~icons/material-symbols/view-timeline-rounded";
 import styles from "./Timeline.module.scss";
 import { useTimeline } from "./TimelineProvider";
+import { TimelineSeeker } from "./TimelineSeeker";
 
 interface TimelineViewProps {
   currentTime: number;
-  onChange: (time: number) => void;
+  max: number;
+  onSeek: (seeking: boolean, time?: number) => void;
 }
+
+/* Pixel to time ratio */
+const seekRatio = 0.5;
 
 export const TimelineView: VoidComponent<TimelineViewProps> = (props) => {
   const [timeline, _, [active, setActive]] = useTimeline();
-  // console.log(useTimeline());
 
   const computePosition = (timeCode: number) => {
-    return (timeCode - props.currentTime) / 5;
+    return (timeCode - props.currentTime) / seekRatio;
   };
 
   function formatTime(time: number) {
@@ -28,7 +32,7 @@ export const TimelineView: VoidComponent<TimelineViewProps> = (props) => {
       <div
         class={styles.item}
         style={{
-          "--item-x": `${computePosition(itemProps.item.timeCode)}rem`,
+          "--item-x": `${computePosition(itemProps.item.timeCode)}px`,
         }}
         onClick={itemProps.clickHandler}
       >
@@ -40,7 +44,8 @@ export const TimelineView: VoidComponent<TimelineViewProps> = (props) => {
 
   return (
     <div class={styles.timeline}>
-      <For each={timeline}>{(item) => <TimelineItem item={item} clickHandler={() => props.onChange(item.timeCode)} />}</For>
+      <TimelineSeeker currentTime={props.currentTime} onSeek={(seeking, time) => props.onSeek(seeking, time)} seekRatio={seekRatio} max={props.max} />
+      <For each={timeline}>{(item) => <TimelineItem item={item} clickHandler={() => props.onSeek(false, item.timeCode)} />}</For>
       <div
         class={styles.toggle_button}
         onClick={(e) => {

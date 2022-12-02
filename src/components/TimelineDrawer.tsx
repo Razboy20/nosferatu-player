@@ -101,14 +101,7 @@ export const TimelineDrawer: VoidComponent<TimelineDrawerProps> = (props) => {
                         />
                       </div>
                     </div>
-                    <TrashcanIcon
-                      class={styles.remove}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        removeItem(item.id);
-                      }}
-                      tabIndex={0}
-                    />
+                    <TrashcanIcon class={styles.remove} onClick={[removeItem, item.id]} tabIndex={0} />
                   </div>
                 )}
               </For>

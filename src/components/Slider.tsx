@@ -40,7 +40,8 @@ export const Slider: VoidComponent<ISliderProps> = (props) => {
   );
 
   createEffect(() => {
-    if (local.value !== untrack(() => progress())) {
+    const value = untrack(() => constrainValue(progress()));
+    if (local.value !== value) {
       setProgress(local.value);
     }
   });
@@ -59,7 +60,7 @@ export const Slider: VoidComponent<ISliderProps> = (props) => {
     return Math.max(0, Math.min(range, value - min)) / range;
   });
 
-  const setValue = (value: number) => {
+  const constrainValue = (value: number) => {
     const { min, max, step } = local;
     if (min >= max) {
       return;
@@ -68,6 +69,11 @@ export const Slider: VoidComponent<ISliderProps> = (props) => {
     if (step > 0) {
       newValue = Math.round(newValue / step) * step;
     }
+    return ~~(newValue * 1000) / 1000;
+  };
+
+  const setValue = (value: number) => {
+    const newValue = constrainValue(value);
     setProgress(newValue);
   };
 
@@ -92,8 +98,8 @@ export const Slider: VoidComponent<ISliderProps> = (props) => {
         e.currentTarget.setPointerCapture(e.pointerId);
         dragOffset = 0;
         dragPointer = e.pointerId;
-        drag(e.clientX - e.currentTarget.getBoundingClientRect().left);
         setSeeking(true);
+        drag(e.clientX - e.currentTarget.getBoundingClientRect().left);
       }}
       onPointerUp={(e) => {
         e.stopPropagation();

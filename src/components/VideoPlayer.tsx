@@ -68,6 +68,12 @@ export default function Counter({ src }: { src: string }) {
     videoRef().currentTime = progress();
   };
 
+  createEffect(() => {
+    if (seeking()) {
+      setPlaying(false);
+    }
+  });
+
   return (
     <TimelineProvider>
       <div class="video-player" ref={containerEl}>
@@ -77,17 +83,21 @@ export default function Counter({ src }: { src: string }) {
             value={progress()}
             max={videoDuration()}
             step={0.2}
-            onChange={(val) => setTime(val)}
-            onSeeking={(val) => {
-              if (val) {
-                setPlaying(false);
-              }
-              setSeeking(val);
+            onChange={(val) => {
+              playing() && !seeking() ? setProgress(val) : setTime(val);
             }}
+            onSeeking={setSeeking}
             class="slider"
           />
         </div>
-        <TimelineView currentTime={progress()} onChange={(val) => setTime(val)} />
+        <TimelineView
+          currentTime={progress()}
+          onSeek={(seeking, val) => {
+            setSeeking(seeking);
+            if (val !== undefined) setTime(val);
+          }}
+          max={videoDuration()}
+        />
         <TimelineDrawer currentTime={progress()} />
         <div class="player">
           <video
@@ -97,7 +107,6 @@ export default function Counter({ src }: { src: string }) {
             onPlay={(e) => setPlaying(!e.currentTarget.paused)}
             onPause={(e) => setPlaying(!e.currentTarget.paused)}
             onTimeUpdate={(e) => setProgress(e.currentTarget.currentTime)}
-            onSeeking={(e) => setProgress(e.currentTarget.currentTime)}
             onDurationChange={(e) => setVideoDuration(e.currentTarget.duration)}
             onMouseDown={() => {
               togglePlay();
