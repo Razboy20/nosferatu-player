@@ -23,6 +23,11 @@ export default function NosferatuPlayer() {
 
   return (
     <>
+      <footer class="absolute bottom-0 w-full text-center text-gray-700 hover:text-gray-900 mb-2 p-1">
+        <a href="https://github.com/razboy20/nosferatu-player/" target="_blank" rel="noopener noreferrer">
+          <IconGithub class="inline -mt-0.5" /> Source
+        </a>
+      </footer>
       <main class="text-center p-4">
         <Show when={!videoBlob()}>
           <input type="file" accept="video/*" hidden ref={uploadRef} onChange={processFile} />
@@ -35,11 +40,6 @@ export default function NosferatuPlayer() {
           <VideoPlayer src={videoURL()}></VideoPlayer>
         </Show>
       </main>
-      <footer class="absolute bottom-0 w-full text-center text-gray-700 hover:text-gray-900 mb-2 p-1">
-        <a href="https://github.com/razboy20/nosferatu-player/" target="_blank" rel="noopener noreferrer">
-          <IconGithub class="inline -mt-0.5" /> Source
-        </a>
-      </footer>
     </>
   );
 }
