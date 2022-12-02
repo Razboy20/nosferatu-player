@@ -14,7 +14,7 @@ export const TimelineSeeker: VoidComponent<TimelineSeekerProps> = (props) => {
 
   return (
     <div
-      class="h-full w-full"
+      class="h-full w-full touch-none"
       onPointerDown={(e) => {
         e.stopPropagation();
         e.currentTarget.setPointerCapture(e.pointerId);
