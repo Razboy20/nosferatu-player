@@ -37,7 +37,7 @@
 }
 
 .drawer {
-  @apply fixed w-72 h-full p-4 top-0 right-0 bg-gray-100 z-50;
+  @apply fixed w-72 h-full p-4 top-0 left-0 bg-gray-100 z-50;
   @apply flex flex-col gap-4;
 
   .header {

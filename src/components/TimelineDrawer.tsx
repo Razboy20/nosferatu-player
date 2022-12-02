@@ -45,7 +45,7 @@ export const TimelineDrawer: VoidComponent<TimelineDrawerProps> = (props) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2, easing: "ease-out" }}
+            transition={{ duration: 0.14, easing: "ease-out" }}
             onClick={(e) => {
               e.stopPropagation();
               setActive(false);
@@ -57,10 +57,10 @@ export const TimelineDrawer: VoidComponent<TimelineDrawerProps> = (props) => {
         <Show when={active()}>
           <Motion.div
             class={styles.drawer}
-            initial={{ x: "100%" }}
+            initial={{ x: "-100%" }}
             animate={{ x: "0%" }}
-            exit={{ x: "100%" }}
-            transition={{ duration: 0.2, easing: "ease-out" }}
+            exit={{ x: "-100%" }}
+            transition={{ duration: 0.15, easing: "ease-out" }}
           >
             <div class={styles.header}>
               <h2>Timeline</h2>
