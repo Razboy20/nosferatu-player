@@ -8,6 +8,7 @@
   "type": "module",
   "devDependencies": {
     "@iconify-json/material-symbols": "^1.1.24",
+    "@iconify-json/mdi": "^1.1.36",
     "@typescript-eslint/eslint-plugin": "^5.45.0",
     "@typescript-eslint/parser": "^5.45.0",
     "autoprefixer": "^10.4.13",

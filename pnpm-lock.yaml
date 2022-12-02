@@ -2,6 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@iconify-json/material-symbols': ^1.1.24
+  '@iconify-json/mdi': ^1.1.36
   '@motionone/solid': ^10.14.3
   '@solid-primitives/event-listener': ^2.2.4
   '@solid-primitives/resize-observer': ^2.0.7
@@ -39,6 +40,7 @@ dependencies:
 
 devDependencies:
   '@iconify-json/material-symbols': 1.1.24
+  '@iconify-json/mdi': 1.1.36
   '@typescript-eslint/eslint-plugin': 5.45.0_czs5uoqkd3podpy6vgtsxfc7au
   '@typescript-eslint/parser': 5.45.0_hsf322ms6xhhd4b5ne6lb74y4a
   autoprefixer: 10.4.13_postcss@8.4.19
@@ -1233,6 +1235,12 @@ packages:
 
   /@iconify-json/material-symbols/1.1.24:
     resolution: {integrity: sha512-yg7KGVbrQ5NU/BZWj+rfEoeR3JA8ehCvY1SgrW+iuZjzZk3qm1sQcwQ5AktvEx/Hx9qnqQMMpscQJRPJxOq6rQ==}
+    dependencies:
+      '@iconify/types': 2.0.0
+    dev: true
+
+  /@iconify-json/mdi/1.1.36:
+    resolution: {integrity: sha512-3aWCVjDIseO8COo8zPkmxOZUFjdWsvTQQnk6zVrOaJh2K8oKuBznw10FSJZgQM7qAn6S54/oejyqkWfODRZV1Q==}
     dependencies:
       '@iconify/types': 2.0.0
     dev: true
