@@ -1,6 +1,6 @@
 import { createElementSize } from "@solid-primitives/resize-observer";
 import clsx from "clsx";
-import { createEffect, createMemo, createSignal, JSX, mergeProps, VoidComponent } from "solid-js";
+import { createEffect, createMemo, createSignal, JSX, mergeProps, on, untrack, VoidComponent } from "solid-js";
 
 import styles from "./Slider.module.scss";
 
@@ -22,17 +22,35 @@ export const Slider: VoidComponent<ISliderProps> = (props) => {
   const [thumbRef, setThumbRef] = createSignal<HTMLDivElement>(null);
   const elementSize = createElementSize(sizeRef);
 
+  const [progress, setProgress] = createSignal(local.value);
   const [seeking, setSeeking] = createSignal(false);
 
   createEffect(() => {
     if (local.onSeeking) local.onSeeking(seeking());
-  }, [seeking]);
+  });
+
+  createEffect(
+    on(
+      progress,
+      (progress) => {
+        if (local.onChange) local.onChange(progress);
+      },
+      { defer: true }
+    )
+  );
+
+  createEffect(() => {
+    if (local.value !== untrack(() => progress())) {
+      setProgress(local.value);
+    }
+  });
 
   let dragPointer: number = undefined;
   let dragOffset = 0;
 
   const position = createMemo(() => {
-    const { min, max, value } = local;
+    const { min, max } = local;
+    const value = progress();
     const range = max - min;
     if (range <= 0) {
       return 0;
@@ -42,17 +60,15 @@ export const Slider: VoidComponent<ISliderProps> = (props) => {
   });
 
   const setValue = (value: number) => {
-    if (local.onChange) {
-      const { min, max, step } = local;
-      if (min >= max) {
-        return;
-      }
-      let newValue = Math.max(min, Math.min(max, value));
-      if (step > 0) {
-        newValue = Math.round(newValue / step) * step;
-      }
-      local.onChange(newValue);
+    const { min, max, step } = local;
+    if (min >= max) {
+      return;
     }
+    let newValue = Math.max(min, Math.min(max, value));
+    if (step > 0) {
+      newValue = Math.round(newValue / step) * step;
+    }
+    setProgress(newValue);
   };
 
   const drag = (pos: number) => {

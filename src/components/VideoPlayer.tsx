@@ -1,7 +1,7 @@
 import "./VideoPlayer.scss";
 
 import { DocumentEventListener } from "@solid-primitives/event-listener";
-import { createEffect, createSignal, JSX, Show } from "solid-js";
+import { createEffect, createSignal, JSX, on, Show } from "solid-js";
 import IconPause from "~icons/material-symbols/pause-rounded";
 import IconPlayArrowRounded from "~icons/material-symbols/play-arrow-rounded";
 import { Slider } from "./Slider";
@@ -53,17 +53,15 @@ export default function Counter({ src }: { src: string }) {
     }
   };
 
-  createEffect(() => {
-    if (seeking()) videoRef().currentTime = progress();
-  }, [seeking, progress]);
-
-  createEffect(() => {
-    if (!playing()) {
-      videoRef().pause();
-    } else {
-      videoRef().play();
-    }
-  }, [playing]);
+  createEffect(
+    on(playing, () => {
+      if (!playing()) {
+        videoRef().pause();
+      } else {
+        videoRef().play();
+      }
+    })
+  );
 
   const setTime = (time: number) => {
     setProgress(time);
@@ -74,13 +72,12 @@ export default function Counter({ src }: { src: string }) {
     <TimelineProvider>
       <div class="video-player" ref={containerEl}>
         <DocumentEventListener onkeyup={handleKeyPress} />
-        {/* <progress value={progress()} max={videoRef.duration} /> */}
         <div class="slider_container">
           <Slider
             value={progress()}
             max={videoDuration()}
             step={0.2}
-            onChange={(val) => setProgress(val)}
+            onChange={(val) => setTime(val)}
             onSeeking={(val) => {
               if (val) {
                 setPlaying(false);

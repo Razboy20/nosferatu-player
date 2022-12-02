@@ -1,5 +1,5 @@
 import { Motion, Presence } from "@motionone/solid";
-import { createEffect, For, Show, VoidComponent } from "solid-js";
+import { createEffect, For, on, Show, VoidComponent } from "solid-js";
 import CloseIcon from "~icons/material-symbols/close-rounded";
 import TrashcanIcon from "~icons/material-symbols/delete-rounded";
 import { useTimeline } from "./TimelineProvider";
@@ -27,9 +27,7 @@ interface TimelineDrawerProps {
 export const TimelineDrawer: VoidComponent<TimelineDrawerProps> = (props) => {
   const [timeline, { addItem, removeItem, updateTimeCode, updateName, sortByTimeCode }, [active, setActive]] = useTimeline();
 
-  createEffect(() => {
-    active(), sortByTimeCode();
-  });
+  createEffect(on(active, () => sortByTimeCode(), { defer: true }));
 
   return (
     <Portal>
@@ -63,18 +61,20 @@ export const TimelineDrawer: VoidComponent<TimelineDrawerProps> = (props) => {
             animate={{ x: "0%" }}
             exit={{ x: "100%" }}
             transition={{ duration: 0.2, easing: "ease-out" }}
-            onKeyUp={(e) => {
-              e.stopImmediatePropagation();
-            }}
           >
             <div class={styles.header}>
               <h2>Timeline</h2>
               <CloseIcon class={styles.close} onClick={[setActive, false]} tabIndex={0} />
             </div>
-            <button onClick={() => addItem({ timeCode: props.currentTime, name: "Placeholder" })} tabIndex={0}>
+            <button onClick={() => addItem({ timeCode: props.currentTime, name: "" })} tabIndex={0}>
               Add Marker
             </button>
-            <div class={styles.items} onKeyUp={(e) => {}}>
+            <div
+              class={styles.items}
+              onKeyUp={(e) => {
+                e.stopImmediatePropagation();
+              }}
+            >
               <For each={timeline}>
                 {(item) => (
                   <div class={styles.drawer_item} onFocusOut={() => sortByTimeCode()}>
@@ -83,6 +83,7 @@ export const TimelineDrawer: VoidComponent<TimelineDrawerProps> = (props) => {
                         <input
                           type="text"
                           value={item.name}
+                          placeholder="Name"
                           onInput={(e) => {
                             updateName(item.id, e.currentTarget.value);
                           }}
@@ -92,10 +93,10 @@ export const TimelineDrawer: VoidComponent<TimelineDrawerProps> = (props) => {
                         <input
                           type="text"
                           value={formatTime(item.timeCode)}
+                          placeholder="0:00"
                           onInput={(e) => {
                             const newTime = parseTime(e.currentTarget.value, item.timeCode);
                             updateTimeCode(item.id, newTime);
-                            // e.currentTarget.value = formatTime(newTime);
                           }}
                         />
                       </div>

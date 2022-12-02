@@ -1,5 +1,5 @@
 import { DocumentEventListener } from "@solid-primitives/event-listener";
-import { Accessor, createContext, createSignal, ParentComponent, useContext } from "solid-js";
+import { Accessor, createContext, createEffect, createSignal, ParentComponent, useContext } from "solid-js";
 import { createStore, produce } from "solid-js/store";
 
 interface TimelineItem {
@@ -24,10 +24,17 @@ type TimelineContext = [
 
 const TimelineContext = createContext<TimelineContext>();
 
-export const TimelineProvider: ParentComponent = (props) => {
-  const [timeline, setTimeline] = createStore<ITimeline>([]);
+const initialTimeline: ITimeline = [{ id: 0, timeCode: 0, name: "Start" }];
 
-  let id = 1;
+export const TimelineProvider: ParentComponent = (props) => {
+  const storedTimeline = localStorage.getItem("timeline");
+  const [timeline, setTimeline] = createStore<ITimeline>(storedTimeline ? JSON.parse(storedTimeline) : initialTimeline);
+
+  let id = timeline.reduce((max, item) => Math.max(max, item.id), 0) + 1;
+
+  createEffect(() => {
+    localStorage.setItem("timeline", JSON.stringify(timeline));
+  });
 
   // @ts-ignore
   const updateTimeline: typeof setTimeline = (...args: Parameters<typeof setTimeline>) => {
@@ -37,37 +44,24 @@ export const TimelineProvider: ParentComponent = (props) => {
   };
 
   const addItem = (item: Omit<TimelineItem, "id">) => {
-    updateTimeline(produce((timeline: ITimeline) => timeline.push({ ...item, id: id++ })));
+    setTimeline(timeline.length, { ...item, id: id++ });
   };
 
   const removeItem = (id: number) => {
-    updateTimeline(
-      produce((timeline: ITimeline) =>
-        timeline.splice(
-          timeline.findIndex((item) => item.id === id),
-          1
-        )
-      )
-    );
+    setTimeline((timeline: ITimeline) => timeline.filter((item) => item.id !== id));
   };
 
   const updateTimeCode = (id: number, timeCode: number) => {
-    updateTimeline((item) => item.id == id, "timeCode", timeCode);
+    setTimeline((item) => item.id == id, "timeCode", timeCode);
   };
 
   const updateName = (id: number, name: string) => {
-    updateTimeline((item) => item.id == id, "name", name);
+    setTimeline((item) => item.id == id, "name", name);
   };
 
   const sortByTimeCode = () => {
-    updateTimeline(produce((timeline: ITimeline) => timeline.sort((a, b) => a.timeCode - b.timeCode)));
+    setTimeline(produce((timeline: ITimeline) => timeline.sort((a, b) => a.timeCode - b.timeCode)));
   };
-
-  // load timeline from localstorage
-  const storedTimeline = localStorage.getItem("timeline");
-  if (storedTimeline) {
-    setTimeline(JSON.parse(storedTimeline));
-  }
 
   const [drawerActive, setDrawerActive] = createSignal(false);
 
