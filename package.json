@@ -14,7 +14,7 @@
     "autoprefixer": "^10.4.13",
     "eslint": "^8.28.0",
     "eslint-config-prettier": "^8.5.0",
-    "postcss": "^8.4.19",
+    "postcss": "^8.4.31",
     "sass": "^1.56.1",
     "solid-start-node": "^0.2.6",
     "tailwindcss": "^3.2.4",
